@@ -1,4 +1,5 @@
 """Smoothed n-gram language model: counts -> probabilities."""
+import math
 import random
 from collections import Counter, defaultdict
 
@@ -80,6 +81,19 @@ class NgramLM:
             return lower
         total, types = self.totals[m][ctx], len(c)
         return (c[w] + types * lower) / (total + types)
+
+    # ---- evaluation -----------------------------------------------------
+    def perplexity(self, text):
+        """exp(-mean log P(word | context)) over every word and end-of-sentence
+        marker in `text`. Lower is better; it is the effective number of words
+        the model is choosing between at each step."""
+        log_sum, N = 0.0, 0
+        for s in to_sentences(text):
+            toks = [BOS] * (self.n - 1) + [self._map(w) for w in to_tokens(s)] + [EOS]
+            for i in range(self.n - 1, len(toks)):
+                log_sum += math.log(self.prob(toks[i - (self.n - 1) : i], toks[i]))
+                N += 1
+        return math.exp(-log_sum / N)
 
     # ---- generation -----------------------------------------------------
     def generate(self, seed=0, max_len=25, start=""):
