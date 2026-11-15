@@ -10,5 +10,7 @@ def to_sentences(text: str) -> list[str]:
 
 
 def to_tokens(sentence: str) -> list[str]:
-    """Lower-case words; apostrophes are kept so "don't" stays one token."""
-    return re.findall(r"[a-z']+", sentence.lower())
+    """Lower-case words; apostrophes are kept so "don't" stays one token.
+    Curly quotes (common in Gutenberg texts) are normalised to a plain apostrophe."""
+    sentence = sentence.lower().replace("’", "'").replace("‘", "'")
+    return [w.strip("'") for w in re.findall(r"[a-z']+", sentence) if w.strip("'")]

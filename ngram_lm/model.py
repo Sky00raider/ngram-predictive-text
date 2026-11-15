@@ -1,4 +1,5 @@
 """Smoothed n-gram language model: counts -> probabilities."""
+import random
 from collections import Counter, defaultdict
 
 from .text import BOS, EOS, UNK, to_sentences, to_tokens
@@ -79,6 +80,28 @@ class NgramLM:
             return lower
         total, types = self.totals[m][ctx], len(c)
         return (c[w] + types * lower) / (total + types)
+
+    # ---- generation -----------------------------------------------------
+    def generate(self, seed=0, max_len=25, start=""):
+        """Sample a sentence word by word from the model's counts.
+        Backs off to a shorter context if the full one was never seen."""
+        rng = random.Random(seed)
+        out = to_tokens(start)
+        for _ in range(max_len):
+            full = self._context(" ".join(out))
+            nxt = None
+            for m in range(self.n, 0, -1):
+                ctx = full[len(full) - (m - 1) :] if m > 1 else ()
+                c = self.counts[m].get(ctx)
+                if c:
+                    words, wts = zip(*c.items())
+                    nxt = rng.choices(words, weights=wts)[0]
+                    break
+            if nxt is None or nxt == EOS:
+                break
+            if nxt != UNK:
+                out.append(nxt)
+        return " ".join(out)
 
     # ---- next-word suggestions -----------------------------------------
     def suggest_next(self, text, topk=3):
