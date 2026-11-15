@@ -20,6 +20,18 @@ BOOKS = {
     98: "a_tale_of_two_cities",
     1400: "great_expectations",
     158: "emma",
+    1260: "jane_eyre",
+    768: "wuthering_heights",
+    2701: "moby_dick",
+    76: "huckleberry_finn",
+    74: "tom_sawyer",
+    120: "treasure_island",
+    161: "sense_and_sensibility",
+    730: "oliver_twist",
+    766: "david_copperfield",
+    1257: "three_musketeers",
+    43: "jekyll_and_hyde",
+    174: "picture_of_dorian_gray",
 }
 
 DATA = Path(__file__).resolve().parent.parent / "data"
