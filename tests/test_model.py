@@ -63,6 +63,20 @@ class TestSuggest(unittest.TestCase):
         self.assertEqual(len(lm.suggest_next("anything", topk=2)), 2)
 
 
+class TestComplete(unittest.TestCase):
+    def test_partial_word_is_completed(self):
+        lm = NgramLM(2).fit(CORPUS)
+        self.assertEqual(lm.complete("i drink co")[0], "coffee")
+
+    def test_trailing_space_suggests_next_word(self):
+        lm = NgramLM(2).fit(CORPUS)
+        self.assertEqual(lm.complete("i drink ")[:2], ["coffee", "tea"])
+
+    def test_sentence_boundary_resets_context(self):
+        lm = NgramLM(2).fit(CORPUS)
+        self.assertEqual(lm.suggest_next("good book."), lm.suggest_next(""))
+
+
 class TestGenerate(unittest.TestCase):
     def test_deterministic_per_seed(self):
         lm = NgramLM(2).fit(CORPUS)

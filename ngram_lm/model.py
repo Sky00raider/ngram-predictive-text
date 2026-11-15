@@ -1,6 +1,7 @@
 """Smoothed n-gram language model: counts -> probabilities."""
 import math
 import random
+import re
 from collections import Counter, defaultdict
 
 from .text import BOS, EOS, UNK, to_sentences, to_tokens
@@ -36,11 +37,15 @@ class NgramLM:
         self.n, self.k, self.smoothing, self.min_count = n, k, smoothing, min_count
 
     # ---- training -------------------------------------------------------
-    def fit(self, text):
+    def fit(self, text, vocab=None):
+        """Count n-grams in `text`. Pass `vocab` to force a fixed vocabulary
+        (e.g. so models trained on different amounts of data are comparable)."""
         self.sents = to_sentences(text)
         tokenized = [to_tokens(s) for s in self.sents]
         word_counts = Counter(w for toks in tokenized for w in toks)
-        self.vocab = {w for w, c in word_counts.items() if c >= self.min_count} | {EOS, UNK}
+        if vocab is None:
+            vocab = {w for w, c in word_counts.items() if c >= self.min_count}
+        self.vocab = set(vocab) | {EOS, UNK}
         mapped = [[self._map(w) for w in toks] for toks in tokenized]
         # counts[m][context of m-1 words] -> Counter(next word), for every order m <= n
         self.counts = {m: build(mapped, m) for m in range(1, self.n + 1)}
@@ -52,6 +57,7 @@ class NgramLM:
 
     def _context(self, text):
         """Last n-1 tokens of `text` (padded with <s>), unknown words -> <unk>."""
+        text = re.split(r"[.!?]+", text)[-1]  # only the sentence being typed
         toks = [self._map(w) for w in to_tokens(text)]
         padded = [BOS] * (self.n - 1) + toks
         return tuple(padded[len(padded) - (self.n - 1) :])
@@ -132,3 +138,14 @@ class NgramLM:
                 if len(out) == topk:
                     return out
         return out
+
+    def complete(self, text, topk=3):
+        """Autocomplete-box behaviour. If `text` ends mid-word ("the mor") rank
+        the words starting with that prefix by P(word | previous words);
+        otherwise suggest the next word."""
+        m = re.search(r"[A-Za-z']+$", text)
+        if not m:
+            return self.suggest_next(text, topk)
+        prefix, ctx = m.group().lower(), self._context(text[: m.start()])
+        cands = [w for w in self.vocab if w.startswith(prefix) and w not in (EOS, UNK)]
+        return sorted(cands, key=lambda w: -self.prob(ctx, w))[:topk]
