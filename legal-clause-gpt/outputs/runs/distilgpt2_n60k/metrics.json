@@ -1,0 +1,152 @@
+{
+ "run": "distilgpt2_n60k",
+ "base": "distilgpt2",
+ "train_clauses": 59080,
+ "max_len": 384,
+ "train_minutes": 33.5,
+ "val_accuracy": 0.854,
+ "val_macro_f1": 0.7711299572711436,
+ "test_accuracy": 0.8551,
+ "test_macro_f1": 0.7731793291656307,
+ "test_accuracy_unseen": 0.8529532825684297,
+ "test_accuracy_truncated": 0.868,
+ "test_accuracy_not_truncated": 0.854421052631579,
+ "confused_pairs": [
+  {
+   "a": "Tax Withholdings",
+   "b": "Withholdings",
+   "a_as_b": 30,
+   "b_as_a": 17
+  },
+  {
+   "a": "Applicable Laws",
+   "b": "Governing Laws",
+   "a_as_b": 43,
+   "b_as_a": 0
+  },
+  {
+   "a": "Defined Terms",
+   "b": "Definitions",
+   "a_as_b": 21,
+   "b_as_a": 19
+  },
+  {
+   "a": "No Waivers",
+   "b": "Waivers",
+   "a_as_b": 10,
+   "b_as_a": 24
+  },
+  {
+   "a": "Entire Agreements",
+   "b": "Integration",
+   "a_as_b": 1,
+   "b_as_a": 28
+  },
+  {
+   "a": "Representations",
+   "b": "Warranties",
+   "a_as_b": 4,
+   "b_as_a": 24
+  },
+  {
+   "a": "Authority",
+   "b": "Authorizations",
+   "a_as_b": 19,
+   "b_as_a": 8
+  },
+  {
+   "a": "Amendments",
+   "b": "Modifications",
+   "a_as_b": 4,
+   "b_as_a": 21
+  },
+  {
+   "a": "General",
+   "b": "Payments",
+   "a_as_b": 24,
+   "b_as_a": 0
+  },
+  {
+   "a": "Binding Effects",
+   "b": "Successors",
+   "a_as_b": 4,
+   "b_as_a": 20
+  },
+  {
+   "a": "Consent To Jurisdiction",
+   "b": "Jurisdictions",
+   "a_as_b": 20,
+   "b_as_a": 1
+  },
+  {
+   "a": "Indemnifications",
+   "b": "Indemnity",
+   "a_as_b": 11,
+   "b_as_a": 9
+  },
+  {
+   "a": "Remedies",
+   "b": "Specific Performance",
+   "a_as_b": 17,
+   "b_as_a": 2
+  },
+  {
+   "a": "Assignments",
+   "b": "Successors",
+   "a_as_b": 4,
+   "b_as_a": 14
+  },
+  {
+   "a": "Construction",
+   "b": "Interpretations",
+   "a_as_b": 16,
+   "b_as_a": 1
+  }
+ ],
+ "abstention": [
+  {
+   "target": 0.9,
+   "test_threshold": 0.6066766977310181,
+   "test_coverage": 0.9006,
+   "test_accuracy": 0.9013990672884743,
+   "test_abstained": 994,
+   "val_coverage": 0.9023,
+   "val_accuracy": 0.9000332483652888
+  },
+  {
+   "target": 0.95,
+   "test_threshold": 0.8935256004333496,
+   "test_coverage": 0.7421,
+   "test_accuracy": 0.947850693976553,
+   "test_abstained": 2579,
+   "val_coverage": 0.7421,
+   "val_accuracy": 0.9500067376364372
+  },
+  {
+   "target": 0.98,
+   "test_threshold": 0.9842310547828674,
+   "test_coverage": 0.5005,
+   "test_accuracy": 0.9798201798201798,
+   "test_abstained": 4995,
+   "val_coverage": 0.5193,
+   "val_accuracy": 0.9801656075486231
+  },
+  {
+   "target": 0.99,
+   "test_threshold": 0.9937514662742615,
+   "test_coverage": 0.3998,
+   "test_accuracy": 0.9884942471235618,
+   "test_abstained": 6002,
+   "val_coverage": 0.4113,
+   "val_accuracy": 0.9900316070994408
+  }
+ ],
+ "review_threshold": 0.8935256004333496,
+ "spearman_trainfreq_accuracy": 0.47806988600127054,
+ "spearman_trainfreq_review": -0.37159830778670194,
+ "ece": 0.043267554349452314,
+ "temperature": 1.232226800935501,
+ "ece_after_temperature": 0.013346931453049141,
+ "nll": 0.5503614544868469,
+ "nll_after_temperature": 0.5252161026000977
+}
