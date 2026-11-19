@@ -1,0 +1,13 @@
+# LEDGAR splits (re-created by scripts/download_data.py)
+data/
+# fine-tuned weights and Trainer checkpoints (~0.3-0.5 GB each; kept in Google Drive)
+*.pt
+*.safetensors
+outputs/runs/*/model/
+outputs/runs/*/checkpoints/
+# smoke-test runs
+outputs/runs/smoke*/
+# the zip uploaded to Colab (re-created by scripts/make_colab_zip.py)
+dist/
+# fine-tuned models downloaded from Drive for the tagger demo
+models/

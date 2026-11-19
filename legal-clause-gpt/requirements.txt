@@ -1,0 +1,6 @@
+torch>=2.4             # Colab ships a CUDA build; locally: pip install torch --index-url https://download.pytorch.org/whl/cpu
+transformers>=5.0      # GPT-2 / distilgpt2 and the Trainer (5.x argument names)
+accelerate>=1.0        # required by the Trainer
+datasets>=3.0          # downloading LEDGAR
+numpy>=1.26
+matplotlib>=3.8        # plots

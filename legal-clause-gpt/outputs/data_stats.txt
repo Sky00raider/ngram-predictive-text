@@ -1,0 +1,45 @@
+## Splits
+     train:  60000 clauses
+validation:  10000 clauses
+      test:  10000 clauses
+
+## Duplicates (exact, after lower-casing and collapsing whitespace)
+train: 920 repeats dropped -> 59080 unique; 3 texts appear with more than one label
+validation: 2.7% of clauses also occur verbatim in the full train split
+test: 2.8% of clauses also occur verbatim in the full train split
+
+## Class imbalance
+deduplicated train: min 23  median 420  max 3124  (largest/smallest = 136x)
+20006-clause subset: min 10  median 142  max 1058; 3 classes under 20 examples, 7 under 50
+test: min 2  median 70  max 582; 3 classes with fewer than 10 test clauses
+
+  rank  label                                 full  subset  test
+     1  Governing Laws                        3124    1058   582
+     2  Notices                               2442     827   422
+     3  Counterparts                          2371     803   490
+     4  Entire Agreements                     2310     782   376
+     5  Severability                          1766     598   412
+     6  Amendments                            1460     494   224
+     7  Survival                              1441     488   222
+     8  Assignments                           1305     442   195
+     9  Expenses                              1206     408   183
+    10  Terms                                 1142     387   176
+   ...
+    91  Approvals                              176      60    26
+    92  Consent To Jurisdiction                173      59    33
+    93  Costs                                  167      57    15
+    94  Venues                                 130      44    20
+    95  Powers                                 124      42    13
+    96  Sanctions                              118      40    14
+    97  Anti-Corruption Laws                   106      36    23
+    98  Qualifications                          47      16     5
+    99  Assigns                                 31      10     4
+   100  Books                                   23      10     2
+
+## Clause length in GPT-2 tokens (clause only, before the prompt suffix)
+     train: mean 143  median 106  p90 295  p95 388  p99 603  max 1765
+            fits uncut in max_len <= 128: 57.3%  <= 256: 85.4%  <= 384: 94.6%  <= 512: 98.0%
+validation: mean 141  median 103  p90 297  p95 378  p99 576  max 1141
+            fits uncut in max_len <= 128: 58.0%  <= 256: 85.0%  <= 384: 95.1%  <= 512: 98.2%
+      test: mean 134  median 96  p90 286  p95 378  p99 590  max 1392
+            fits uncut in max_len <= 128: 61.6%  <= 256: 87.0%  <= 384: 95.0%  <= 512: 98.0%
