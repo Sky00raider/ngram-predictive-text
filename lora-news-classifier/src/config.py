@@ -27,7 +27,7 @@ def get_device() -> str:
 #   bloom-560m: query_key_value = fused Q,K,V; dense_h_to_4h / dense_4h_to_h = MLP.
 BASE_MODELS = {
     "distilgpt2": {
-        "hf_name": "distilgpt2",
+        "hf_name": "distilbert/distilgpt2",
         "attn": ["attn.c_attn"],
         "mlp": ["mlp.c_fc", "mlp.c_proj"],
     },
@@ -52,8 +52,9 @@ class Config:
     epochs: int = 3
     batch_size: int = 16
     lr: float = 2e-4
+    warmup_frac: float = 0.05     # share of steps spent ramping the lr up from 0
     weight_decay: float = 0.0
-    max_len: int = 64             # tokens; longer headlines are cut from the left
+    max_len: int = 64             # prompt tokens; longer headlines keep their beginning
     seed: int = 1337
     # quantization of the frozen base: None, "absmax4" or "nf4"
     quant: str | None = None

@@ -62,6 +62,33 @@ def load_all(data_dir: Path = DATA_DIR) -> dict[str, list[tuple[str, str]]]:
     return {split: load_split(split, data_dir) for split in SPLITS}
 
 
+def dedupe(rows: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Keep one copy of each headline; drop headlines seen with different labels.
+
+    About 9% of train headlines are exact repeats. Repeats would get extra
+    weight in training, and a headline with two labels can't be learned.
+    """
+    labels_of = {}
+    for text, label in rows:
+        labels_of.setdefault(text, set()).add(label)
+    seen, out = set(), []
+    for text, label in rows:
+        if len(labels_of[text]) == 1 and text not in seen:
+            seen.add(text)
+            out.append((text, label))
+    return out
+
+
+def unseen_mask(rows: list[tuple[str, str]], train_rows: list[tuple[str, str]]) -> list[bool]:
+    """True for headlines that do NOT appear word-for-word in train.
+
+    ~17% of validation/test headlines are also in train; accuracy on those
+    measures memory, so we report accuracy on the unseen ones separately.
+    """
+    train_texts = {text for text, _ in train_rows}
+    return [text not in train_texts for text, _ in rows]
+
+
 def label_names(train_rows: list[tuple[str, str]]) -> list[str]:
     """Labels that actually occur in training, sorted, so the order is stable.
 

@@ -2,3 +2,5 @@
 data/
 # adapters and checkpoints; small final adapters are force-added on purpose
 *.pt
+# smoke-test runs
+outputs/runs/smoke*/
