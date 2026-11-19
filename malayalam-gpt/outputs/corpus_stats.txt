@@ -1,0 +1,108 @@
+size: 8.00 MB
+characters: 2909380
+lines: 9839
+vocab size: 97
+
+char  code    name                                          count
+\n    U+000A  LINE FEED                                    9839
+' '   U+0020  SPACE                                        286416
+!     U+0021  EXCLAMATION MARK                             483
+"     U+0022  QUOTATION MARK                               651
+'     U+0027  APOSTROPHE                                   1498
+(     U+0028  LEFT PARENTHESIS                             982
+)     U+0029  RIGHT PARENTHESIS                            998
+,     U+002C  COMMA                                        9227
+-     U+002D  HYPHEN-MINUS                                 1567
+.     U+002E  FULL STOP                                    34630
+0     U+0030  DIGIT ZERO                                   3550
+1     U+0031  DIGIT ONE                                    3071
+2     U+0032  DIGIT TWO                                    2889
+3     U+0033  DIGIT THREE                                  1248
+4     U+0034  DIGIT FOUR                                   1047
+5     U+0035  DIGIT FIVE                                   1330
+6     U+0036  DIGIT SIX                                    778
+7     U+0037  DIGIT SEVEN                                  767
+8     U+0038  DIGIT EIGHT                                  809
+9     U+0039  DIGIT NINE                                   1044
+:     U+003A  COLON                                        365
+;     U+003B  SEMICOLON                                    472
+?     U+003F  QUESTION MARK                                667
+ം     U+0D02  MALAYALAM SIGN ANUSVARA                      56039
+ഃ     U+0D03  MALAYALAM SIGN VISARGA                       1134
+അ     U+0D05  MALAYALAM LETTER A                           19336
+ആ     U+0D06  MALAYALAM LETTER AA                          9302
+ഇ     U+0D07  MALAYALAM LETTER I                           10122
+ഈ     U+0D08  MALAYALAM LETTER II                          1904
+ഉ     U+0D09  MALAYALAM LETTER U                           5551
+ഊ     U+0D0A  MALAYALAM LETTER UU                          156
+ഋ     U+0D0B  MALAYALAM LETTER VOCALIC R                   30
+ഌ     U+0D0C  MALAYALAM LETTER VOCALIC L                   25
+എ     U+0D0E  MALAYALAM LETTER E                           13975
+ഏ     U+0D0F  MALAYALAM LETTER EE                          1878
+ഐ     U+0D10  MALAYALAM LETTER AI                          943
+ഒ     U+0D12  MALAYALAM LETTER O                           5174
+ഓ     U+0D13  MALAYALAM LETTER OO                          1861
+ഔ     U+0D14  MALAYALAM LETTER AU                          162
+ക     U+0D15  MALAYALAM LETTER KA                          151443
+ഖ     U+0D16  MALAYALAM LETTER KHA                         2894
+ഗ     U+0D17  MALAYALAM LETTER GA                          11776
+ഘ     U+0D18  MALAYALAM LETTER GHA                         1831
+ങ     U+0D19  MALAYALAM LETTER NGA                         27963
+ച     U+0D1A  MALAYALAM LETTER CA                          41756
+ഛ     U+0D1B  MALAYALAM LETTER CHA                         293
+ജ     U+0D1C  MALAYALAM LETTER JA                          11968
+ഝ     U+0D1D  MALAYALAM LETTER JHA                         10
+ഞ     U+0D1E  MALAYALAM LETTER NYA                         11235
+ട     U+0D1F  MALAYALAM LETTER TTA                         79393
+ഠ     U+0D20  MALAYALAM LETTER TTHA                        641
+ഡ     U+0D21  MALAYALAM LETTER DDA                         8337
+ഢ     U+0D22  MALAYALAM LETTER DDHA                        100
+ണ     U+0D23  MALAYALAM LETTER NNA                         39383
+ത     U+0D24  MALAYALAM LETTER TA                          126265
+ഥ     U+0D25  MALAYALAM LETTER THA                         4688
+ദ     U+0D26  MALAYALAM LETTER DA                          18188
+ധ     U+0D27  MALAYALAM LETTER DHA                         10820
+ന     U+0D28  MALAYALAM LETTER NA                          158696
+പ     U+0D2A  MALAYALAM LETTER PA                          75849
+ഫ     U+0D2B  MALAYALAM LETTER PHA                         4876
+ബ     U+0D2C  MALAYALAM LETTER BA                          11360
+ഭ     U+0D2D  MALAYALAM LETTER BHA                         7599
+മ     U+0D2E  MALAYALAM LETTER MA                          62694
+യ     U+0D2F  MALAYALAM LETTER YA                          95024
+ര     U+0D30  MALAYALAM LETTER RA                          95615
+റ     U+0D31  MALAYALAM LETTER RRA                         48589
+ല     U+0D32  MALAYALAM LETTER LA                          63333
+ള     U+0D33  MALAYALAM LETTER LLA                         35539
+ഴ     U+0D34  MALAYALAM LETTER LLLA                        7074
+വ     U+0D35  MALAYALAM LETTER VA                          61055
+ശ     U+0D36  MALAYALAM LETTER SHA                         13652
+ഷ     U+0D37  MALAYALAM LETTER SSA                         15173
+സ     U+0D38  MALAYALAM LETTER SA                          51624
+ഹ     U+0D39  MALAYALAM LETTER HA                          9385
+ാ     U+0D3E  MALAYALAM VOWEL SIGN AA                      110543
+ി     U+0D3F  MALAYALAM VOWEL SIGN I                       190844
+ീ     U+0D40  MALAYALAM VOWEL SIGN II                      16543
+ു     U+0D41  MALAYALAM VOWEL SIGN U                       125192
+ൂ     U+0D42  MALAYALAM VOWEL SIGN UU                      12267
+ൃ     U+0D43  MALAYALAM VOWEL SIGN VOCALIC R               2577
+െ     U+0D46  MALAYALAM VOWEL SIGN E                       62913
+േ     U+0D47  MALAYALAM VOWEL SIGN EE                      26454
+ൈ     U+0D48  MALAYALAM VOWEL SIGN AI                      5014
+ൊ     U+0D4A  MALAYALAM VOWEL SIGN O                       7539
+ോ     U+0D4B  MALAYALAM VOWEL SIGN OO                      31231
+ൌ     U+0D4C  MALAYALAM VOWEL SIGN AU                      1358
+്     U+0D4D  MALAYALAM SIGN VIRAMA                        410940
+ൎ     U+0D4E  MALAYALAM LETTER DOT REPH                    4
+ൗ     U+0D57  MALAYALAM AU LENGTH MARK                     28
+ൡ     U+0D61  MALAYALAM LETTER VOCALIC LL                  3
+ൺ     U+0D7A  MALAYALAM LETTER CHILLU NN                   1323
+ൻ     U+0D7B  MALAYALAM LETTER CHILLU N                    8551
+ർ     U+0D7C  MALAYALAM LETTER CHILLU RR                   14808
+ൽ     U+0D7D  MALAYALAM LETTER CHILLU L                    15225
+ൾ     U+0D7E  MALAYALAM LETTER CHILLU LL                   7981
+ൿ     U+0D7F  MALAYALAM LETTER CHILLU K                    1
+
+sample (~600 chars from the middle):
+ിന് നാട്ടുകാര് നെട്ടോട്ടം ഓടുമ്പോഴാണ് ഇങ്ങനെ പാഴാകുന്നത്.
+ലോക്ക്ഡൌണിന്റെ പശ്ചാത്തലത്തില് സംസ്ഥാനത്ത് മത്സ്യബന്ധനത്തിന് കര്ശന നിയന്ത്രണമാണ് ഏര്പ്പെടുത്തിയിരിക്കുന്നത്. ഇതോടെ കടല്മത്സ്യങ്ങളുടെ വരവ് കുറഞ്ഞു. ഇപ്പോള് വിപണിയില് ലഭ്യമാകുന്ന പകുതിയിലധികം മത്സ്യവും അയല് സംസ്ഥാനത്ത് നിന്ന് വരുന്നവയാണ്. കണ്ടെയനര് വഴി റോഡ്മാര്ഗമാണ് അഴുകിയ മത്സ്യങ്ങള് സംസ്ഥാനത്തെ ഹാര്ബറുകളില് എത്തുന്നത്. ഇന്ന് കൊച്ചി വൈപ്പിനില് 4000 കിലോ മത്സ്യമാണ് ഇത്തരത്തില് പിടികൂടിയത്. ഫിഷറീസ് വകുപ്പും ഭക്ഷ്യസുരക്ഷവിഭാഗവും നടത്തിയ പരിശോധനയില് മത്സ്യം ഭക്ഷ്യയോഗ്യമല്ല എന്ന് കണ്ടെത്തി.
+തിരുവനന്തപുരംഃ എഡിജിപി സുധേഷ് കുമാറിന്റെ മകള് സ്നിഗ്
