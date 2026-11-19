@@ -81,6 +81,9 @@ def train(cfg: Config, run_name: str, limit: int | None = None, max_steps: int |
     print(f"{cfg.base} | targets={cfg.targets} r={cfg.rank} alpha={cfg.alpha} | device={device}")
     print(f"trainable {trainable:,} of {total:,} params ({trainable / total:.3%}) "
           f"| train {len(train_rows)} headlines (deduplicated), labels {cfg.labels}")
+    room = cfg.max_len - len(clf.suffix_ids)
+    cut = sum(clf.n_tokens(text) > room for text, _ in train_rows) / len(train_rows)
+    print(f"max_len {cfg.max_len}: {cut:.1%} of train headlines are truncated")
 
     steps_per_epoch = math.ceil(len(train_rows) / cfg.batch_size)
     total_steps = min(max_steps or 10**9, steps_per_epoch * cfg.epochs)
@@ -156,7 +159,7 @@ def parse_args() -> tuple[Config, argparse.Namespace]:
     p.add_argument("--epochs", type=int, default=defaults.epochs)
     p.add_argument("--batch-size", type=int, default=defaults.batch_size)
     p.add_argument("--lr", type=float, default=defaults.lr)
-    p.add_argument("--max-len", type=int, default=defaults.max_len)
+    p.add_argument("--max-len", type=int, default=None, help="default: set per base model in config.py")
     p.add_argument("--seed", type=int, default=defaults.seed)
     p.add_argument("--name", default=None, help="run folder name (default: built from the settings)")
     p.add_argument("--limit", type=int, default=None, help="use only this many headlines per split")

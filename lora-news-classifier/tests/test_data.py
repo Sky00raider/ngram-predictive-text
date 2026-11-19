@@ -47,6 +47,11 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(Config(base="distilgpt2").target_modules(), ["attn.c_attn"])
         self.assertEqual(len(Config(base="bloom-560m", targets="attn+mlp").target_modules()), 3)
 
+    def test_max_len_per_base(self):
+        self.assertEqual(Config(base="distilgpt2").max_len, 336)
+        self.assertEqual(Config(base="bloom-560m").max_len, 64)
+        self.assertEqual(Config(base="distilgpt2", max_len=100).max_len, 100)
+
 
 if __name__ == "__main__":
     unittest.main()
