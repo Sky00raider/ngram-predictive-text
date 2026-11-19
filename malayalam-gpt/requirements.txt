@@ -1,0 +1,4 @@
+torch>=2.9        # CPU build: pip install torch --index-url https://download.pytorch.org/whl/cpu
+matplotlib>=3.8   # loss curve
+datasets>=3.0     # downloading the Malayalam corpus
+tiktoken>=0.8     # GPT-2 tokenizer, for the tokenizer comparison only

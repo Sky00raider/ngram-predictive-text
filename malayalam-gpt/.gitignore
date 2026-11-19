@@ -1,0 +1,4 @@
+# raw + cleaned corpus (re-created by scripts/download_data.py)
+data/
+# checkpoints; the final small model is force-added on purpose
+*.pt
