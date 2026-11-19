@@ -7,6 +7,6 @@ Six drills from Tinyverse, one folder each. Every project is self-contained: `cd
 | 1 | [predictive-text-engine](predictive-text-engine/) | Smoothed n-gram language model from scratch: next-word suggestions, autocomplete, generation, perplexity |
 | 2 | [malayalam-gpt](malayalam-gpt/) | Character-level GPT written by hand in PyTorch and trained from scratch on Malayalam text |
 | 3 | _coming soon_ | |
-| 4 | _coming soon_ | |
+| 4 | [legal-clause-gpt](legal-clause-gpt/) | GPT-2 fully fine-tuned to tag contract clauses with 100 LEDGAR types, with calibrated confidence and "needs human review" abstention |
 | 5 | _coming soon_ | |
 | 6 | _coming soon_ | |
