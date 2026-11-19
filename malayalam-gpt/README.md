@@ -17,7 +17,7 @@ gpt.complete("കേരളത്തിൽ", max_new_tokens=200, temperature=0.8,
 | Self-attention from scratch (masked scaled dot-product) | `Head` in `src/model.py`, plus `MultiHeadAttention`, `FeedForward`, `Block` |
 | Transformer trained with next-token cross-entropy, loss falling | `src/train.py`, `outputs/*/loss.csv`, `outputs/loss_curve.png` (Finding 1) |
 | Generation with temperature / top-k / top-p | `GPT.generate` in `src/model.py`, `src/generate.py`, `outputs/char/decoding_comparison.md` (Finding 3) |
-| Originality: own corpus and cleaning, write-up | `src/clean.py`, `scripts/prepare_data.py`, `outputs/corpus_stats.txt`, this README |
+| Originality: own corpus and cleaning, write-up | `src/clean.py`, `scripts/prepare_data.py`, `outputs/corpus_stats.txt`, `scripts/evaluate_samples.py`, this README |
 | Stretch: BPE tokens | `src/bpe.py`, `scripts/train_bpe.py`, `scripts/compare_tokenizers.py` (Findings 4-5) |
 
 ## Run it
@@ -42,6 +42,7 @@ python scripts/train_bpe.py            # 1024-token BPE, ~10 s
 python scripts/compare_tokenizers.py   # -> outputs/tokenizer_comparison.md
 python -m src.train --tokenizer bpe --run bpe --max-iters 3000   # ~28 min on CPU
 python scripts/plot_loss.py            # -> outputs/loss_curve.png
+python scripts/evaluate_samples.py     # -> outputs/sample_quality.md (real-word rate, script errors)
 python -m unittest discover -s tests   # 26 tests
 ```
 
@@ -92,31 +93,31 @@ Best validation loss is **1.4976** (step 4750; that checkpoint is the one saved)
 
 ### 2. Samples across training
 
-Same prompt `കേരളത്തിൽ` ("In Kerala"), temperature 0.8, top-k 40, from `outputs/char/samples.txt`:
+Same prompt `കേരളത്തിൽ` ("In Kerala"), temperature 0.8, top-k 40, from `outputs/char/samples.txt`. Translations are rough and literal; *italics* mark invented words, with the real pieces they are built from where there are any.
 
 * **step 0** (val 4.684): `കേരളത്തിൽിഈഹഞഊന ഠഔ`
-  _English translation: TODO_
+  → random characters; vowel signs float with no consonant to attach to.
 * **step 500** (val 2.141): `കേരളത്തിൽ ഇരുമായി വെപ്പനമായിരിക്കി. ആ പ്രസംസൂറ്റിക്കലും ചോരിച്ചു. എല്ലേ ബൂർ വല്ലീസ് അവമസ്റഹച്ചുകളും`
-  _English translation: TODO_
+  → "In Kerala *irumaayi* *veppanamaayirikki*. That *prasamsoottikkal* too *chorichu*. *Elle boor vallees avamasrahachukal*." Almost no real words, but real endings (-മായി "as/with", -ിക്കലും "also the act of", -ുകളും "and the ...s") and sentence-final full stops.
 * **step 2500** (val 1.588): `കേരളത്തിൽ ഒരു വൈകുവാൻ കയറ്റാണ് കാരണം പ്രതികരണമാണ് വേണ്ടി വകലവാഹ സ്വദേശികളും വെള്ളക്ക് വിവിധ മാവാക്കിയത്.`
-  _English translation: TODO_
+  → "In Kerala, a to-be-late is a *climb*; the reason is a response; for the *vakalavaaha* natives and *vellakk*, various [things] were *made into flour*." Mostly real words, no meaning.
 * **step 5000** (val 1.509): `കേരളത്തിൽ അപകടവുമായി ഉപയോഗിച്ചു. സി.. എസ്. പി. ഫ്രസ് കേരള 10 മരുന്ന് മാത്രം ചെയ്തു.` / `ഇന്ത്യ ചെന്നൈസ് ഫലി പരിപാടി പറഞ്ഞു.`
-  _English translation: TODO_
+  → "In Kerala, used with an accident. C.. S. P. *Fras* Kerala did only 10 medicines." / "India *Chennais* *phali* programme said." Real words, news vocabulary and abbreviations, verb-final sentences; still no meaning.
 
 ### 3. Decoding: temperature, top-k, top-p
 
 Same prompt, same seed, 250 new tokens, char model (`outputs/char/decoding_comparison.md`, first sentence of each):
 
 * **temperature 0.5**: `കേരളത്തിൽ അമ്മയിൽ കൃത്യമാണ്. ക്രൈംബ്രാഞ്ച് വിട്ടപ്പോൾ ജയറാഖ് അറിയിച്ചു. ഇതിന്റെ സ്വദേശിക്കാതെയാണ് കുടുംബത്തിൽ ജയിലിൽ നിന്ന് കോടതിയിലെ ഉണ്ടായത്.`
-  _English translation: TODO_
+  → "In Kerala, in the mother, it is exact. When the Crime Branch left, *Jayarakh* informed. It is without *native-ing* this that, in the family, from jail, the court's [one] happened."
 * **temperature 1.0**: `കേരളത്തിൽനിന്നും സംഭവം, ഫ്ര്വാം കോടതിയിൽ ഗവന്തര പൊലീസിലും നഗര്ശനങ്ങൾ കാണുന്ന ഇരു പാസത്ത് വരുമോ മാറ്റം നൽകിയത്.`
-  _English translation: TODO_
+  → "From Kerala, the incident, *frvaam* in court, also in the *gavanthara* police, seeing *nagarshanangal*, will the two *paasath* come, gave the change."
 * **temperature 1.4**: `കേരളത്തിൽനിന്നും സബ്. ഹിഫ്ര്: ആറോപ്പ്യക്കഗറിറ്റിംഗ്, ദൃശ്യനഗരൻഡൽ ജമങേക്കൽ, നസുരക്ഷാസത്ത് 614:6 മാംയദിൽ`
-  _English translation: TODO_
+  → "From Kerala, sub. *Hifr*: *aaroppyakkagarittimg*, *drishyanagarandal* (visual + city + ...), *jamangekkal*, *nasurakshaasath* (... security ...) 614:6 *maamyadil*." Mostly non-words.
 * **top-k 10** (temp 1.0): `കേരളത്തിൽനിന്നും സംഭവം, വിര്ദ്ദേശിക്കയിൽ നടന്നു പൊലീസിലും നിര്മ്മുണ്ടായിരുന്നു.`
-  _English translation: TODO_
+  → "From Kerala, the incident took place in *virddeshikka* (≈ instructing), and in the police too there was *nirmmu* (≈ construction)."
 * **top-p 0.9** (temp 1.0): `കേരളത്തിൽ അമ്മയിൽ എന്നാൽ അറ്റാലിക്കാരുടെ ഗുണമെന്നും ഉദ്യോഗസ്ഥൻ ചോദ്യം ഉറങ്ങുന്നതാണ്.`
-  _English translation: TODO_
+  → "In Kerala, in the mother, but the *attaalikkaar*'s benefit, and the officer's question is sleeping."
 
 Low temperature gives the most conventional news-style phrasing (reporting verbs like അറിയിച്ചു, common nouns), at the cost of variety. At 1.4 the text drifts into invented words, stray digits and punctuation. Top-k and top-p sit between the two. Because the seed is shared, the 0.5 and top-p 0.9 rows start identically, as do the 1.0 and top-k 10 rows, until the filtered distribution diverges.
 
@@ -157,15 +158,37 @@ BPE reaches a lower bits/char in fewer steps and less time, and its curve was st
 > കേരളത്തിൽ അവിടെ കാണപ്പെടുന്നതായിരുന്നു.
 > കൊവിഡ് വാഹനങ്ങളുടെ ആവശ്യം നടപ്പും നമുക്ക് ശബ്ദങ്ങളും പകർണ്ണമായും ശക്തിപരമായും സൃഷ്ടിക്കൊണ്ട് നിക്ഷേപം നൽകി.
 
-_English translation: TODO_
+→ "In Kerala, it was being seen there. / The need for Covid vehicles, the *implementation*, and for us sounds, *pakarnnamaayi* and powerfully, *creating*, gave investment." At temperature 0.5 it produces `പ്രധാനമന്ത്രി നരേന്ദ്ര മോദി` ("Prime Minister Narendra Modi"), a three-word name spelled perfectly, because each word is a handful of BPE tokens it has seen together many times.
 
 ## What it learned vs what it didn't
 
-> TODO (author): written by a native speaker. Prompts:
-> * Spelling and conjuncts: does it form valid conjuncts, chillus and vowel-sign order? Which errors are most common?
-> * Word order and case endings: are suffixes (-ിൽ, -ന്റെ, -ക്ക്) attached to sensible stems? Does it respect subject-object-verb order?
-> * Sentence meaning: do sentences say anything, or only look like news?
-> * Topic coherence: does a paragraph stay on one subject? How far does the 128-token context carry?
+Two things can be measured without reading the output (`scripts/evaluate_samples.py` → `outputs/sample_quality.md`, ~3,000 generated characters per row, 5 prompts):
+
+| model | decoding | real words | script errors / 100 words |
+|---|---|---|---|
+| real validation text | | 72% | 0.1 |
+| char | temp 0.5 | 81% | 0.7 |
+| char | temp 0.8, top-k 40 | 57% | 0.6 |
+| char | temp 1.4 | 23% | 2.6 |
+| BPE | temp 0.5 | 72% | 0.3 |
+| BPE | temp 0.8, top-k 40 | 58% | 0.3 |
+| BPE | temp 1.4 | 41% | 1.3 |
+
+*Real words* is the share of generated words that also occur in the training text. Even genuine held-out text only scores 72%, because Malayalam glues suffixes onto words and many correct forms are simply rare. *Script errors* are sign sequences no real word can have (a vowel sign or virama starting a word, two vowel signs in a row).
+
+**What it learned**
+
+* **The writing system.** At step 0 vowel signs float with nothing to attach to. After training there is under one impossible sequence per 100 words at normal settings: it puts vowel signs after consonants, builds conjuncts with the virama (ക്ക, ത്ത, ന്ന, ഞ്ഞ) and ends words with chillu letters. It learned this from code points alone, with no rule written down.
+* **Word endings.** Stems carry real case and tense endings: -ിൽ (in), -ന്റെ (of), -ക്ക് (to), -ും (and/also), past tense -ിച്ചു. Sentences end with a verb and a full stop, the normal Malayalam subject-object-verb order.
+* **The vocabulary and register of news.** Court, police, Crime Branch, jail, Covid, "informed" (അറിയിച്ചു), "said" (പറഞ്ഞു): the reporting verbs that close Malayalam news sentences. The BPE model spells multi-word names like പ്രധാനമന്ത്രി നരേന്ദ്ര മോദി correctly.
+* **Temperature works as expected.** Low temperature keeps to frequent words (81% real at 0.5, above real text, since it avoids rare forms), high temperature invents (23% at 1.4).
+
+**What it didn't**
+
+* **Meaning.** Sentences look grammatical but say nothing: "the officer's question is sleeping". Subjects and verbs don't agree in sense.
+* **A reliable lexicon.** At normal settings about 4 in 10 words are not in the training text. Some are valid rare forms, many are inventions stitched from real pieces (സ്വദേശിക്കാതെ, നിര്മ്മുണ്ടായിരുന്നു). It knows how Malayalam words are *built* better than which words *exist*.
+* **Coherence.** Topics drift from sentence to sentence. The char model sees about 12 words of context; BPE about 3x more, which helps spelling but not yet meaning.
+* **BPE helps where tokens help.** BPE makes fewer script errors (0.3 vs 0.6 per 100 words) because many signs come pre-attached inside its tokens, but its real-word rate at normal settings is about the same (58% vs 57%).
 
 ## Limitations / next steps
 
@@ -179,9 +202,9 @@ _English translation: TODO_
 
 ```
 src/        config.py, tokenizer.py (char), bpe.py, clean.py, data.py, model.py (the GPT), train.py, generate.py
-scripts/    download_data.py, prepare_data.py, corpus_stats.py, train_bpe.py, compare_tokenizers.py, plot_loss.py
+scripts/    download_data.py, prepare_data.py, corpus_stats.py, train_bpe.py, compare_tokenizers.py, plot_loss.py, evaluate_samples.py
 tests/      26 unit tests (cleaning, tokenizers, BPE, model)
-outputs/    corpus_stats.txt, tokenizer_comparison.md, bpe_report.txt, loss_curve.png, bpe_vocab.json
+outputs/    corpus_stats.txt, tokenizer_comparison.md, bpe_report.txt, loss_curve.png, bpe_vocab.json, sample_quality.md
   char/     model.pt, vocab.json, config.json, loss.csv, samples.txt, decoding_comparison.md, train.log
   bpe/      same files for the BPE run
 data/       raw.txt, corpus.txt (generated, not committed)
