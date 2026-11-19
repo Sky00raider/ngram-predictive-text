@@ -1,0 +1,4 @@
+# headline splits (re-created by scripts/download_data.py)
+data/
+# adapters and checkpoints; small final adapters are force-added on purpose
+*.pt

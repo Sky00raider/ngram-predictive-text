@@ -1,0 +1,4 @@
+torch>=2.9           # CPU build: pip install torch --index-url https://download.pytorch.org/whl/cpu
+transformers>=4.46   # pretrained bases (distilgpt2, bloom-560m) and their tokenizers
+datasets>=3.0        # downloading the headline dataset
+matplotlib>=3.8      # plots
