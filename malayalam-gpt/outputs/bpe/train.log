@@ -1,0 +1,17 @@
+device=cpu tokenizer=bpe vocab=1024 tokens=1,104,420 params=1,071,360
+config: Config(block_size=128, n_embd=128, n_heads=4, n_layers=4, dropout=0.1, batch_size=32, max_iters=3000, lr=0.001, eval_interval=250, eval_iters=50, seed=1337)
+untrained loss should be about ln(vocab) = 6.931
+step     0 | train 7.0958 | val 7.0991 | 0.2 min
+step   250 | train 4.8322 | val 4.8390 | 2.4 min
+step   500 | train 4.5048 | val 4.5423 | 4.7 min
+step   750 | train 4.3887 | val 4.4430 | 6.7 min
+step  1000 | train 4.2756 | val 4.3562 | 8.8 min
+step  1250 | train 4.1712 | val 4.2532 | 11.5 min
+step  1500 | train 4.0617 | val 4.1678 | 13.7 min
+step  1750 | train 3.9668 | val 4.0847 | 16.2 min
+step  2000 | train 3.8647 | val 3.9962 | 18.9 min
+step  2250 | train 3.8010 | val 3.9335 | 20.9 min
+step  2500 | train 3.7351 | val 3.8907 | 22.8 min
+step  2750 | train 3.6783 | val 3.8442 | 25.2 min
+step  3000 | train 3.6039 | val 3.8007 | 27.6 min
+done in 27.6 min, best val loss 3.8007 -> C:\Users\Niranjan Nishore\Desktop\TInyverse\malayalam-gpt\outputs\bpe\model.pt
