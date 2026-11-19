@@ -1,0 +1,13 @@
+{
+  "base": "gpt2",
+  "train_size": 60000,
+  "min_per_class": 10,
+  "max_len": 384,
+  "eval_size": 2000,
+  "epochs": 3,
+  "batch_size": 16,
+  "lr": 5e-05,
+  "warmup_frac": 0.06,
+  "weight_decay": 0.01,
+  "seed": 1337
+}
