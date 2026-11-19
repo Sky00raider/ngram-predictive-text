@@ -8,32 +8,27 @@ Each run writes to outputs/runs/<name>/:
     config.json   the full Config
     log.csv       step, train loss, validation accuracy
     metrics.json  final validation/test accuracy (full and unseen-only)
+    adapter.pt    LoRA weights + label-token rows + config (see src/adapter.py)
+    test_logits.pt  test headlines, labels and label logits, to check a reloaded adapter against
 """
 import argparse
 import csv
 import json
 import math
 import random
+import sys
 import time
 from pathlib import Path
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
 
+from src.adapter import build_classifier, save_adapter
 from src.classify import HeadlineClassifier
 from src.config import Config, get_device
 from src.data import dedupe, label_names, load_all, unseen_mask
-from src.lora import count_parameters, inject_lora
+from src.lora import count_parameters
 
 RUNS_DIR = Path("outputs/runs")
-
-
-def build_classifier(cfg: Config, device: str) -> HeadlineClassifier:
-    """Load the pretrained base, freeze it, add LoRA and the label tokens."""
-    tokenizer = AutoTokenizer.from_pretrained(cfg.hf_name)
-    model = AutoModelForCausalLM.from_pretrained(cfg.hf_name, dtype=torch.float32).to(device)
-    inject_lora(model, cfg.target_modules(), cfg.rank, cfg.alpha, cfg.lora_dropout)
-    return HeadlineClassifier(model, tokenizer, cfg.labels, cfg.max_len).to(device)
 
 
 def evaluate(clf: HeadlineClassifier, rows, train_rows) -> dict:
@@ -102,6 +97,7 @@ def train(cfg: Config, run_name: str, limit: int | None = None, max_steps: int |
     before = evaluate(clf, data["validation"], train_rows)
     print(f"before training: val acc {before['acc']:.3f}")
     log.writerow([0, "", f"{before['acc']:.4f}", f"{before['acc_unseen']:.4f}", 0])
+    log_file.flush()
 
     step, start, running = 0, time.time(), []
     train_secs = 0.0  # time spent in training steps only (evals excluded)
@@ -143,6 +139,13 @@ def train(cfg: Config, run_name: str, limit: int | None = None, max_steps: int |
         "validation": evaluate(clf, data["validation"], train_rows),
         "test": evaluate(clf, data["test"], train_rows),
     }
+    clf.eval()
+    test_logits = torch.cat([clf.label_logits([text for text, _ in data["test"][i:i + 64]]).cpu()
+                             for i in range(0, len(data["test"]), 64)])
+    torch.save({"texts": [text for text, _ in data["test"]],
+                "labels": [label for _, label in data["test"]],
+                "logits": test_logits}, out_dir / "test_logits.pt")
+    metrics["adapter_bytes"] = save_adapter(clf, cfg, out_dir / "adapter.pt")
     (out_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     t = metrics["test"]
     print(f"test acc {t['acc']:.3f} (n={t['n']}) | unseen-only {t['acc_unseen']:.3f} (n={t['n_unseen']})")
@@ -174,6 +177,7 @@ def parse_args() -> tuple[Config, argparse.Namespace]:
 
 
 def main():
+    sys.stdout.reconfigure(line_buffering=True)  # show progress live, even when piped
     cfg, args = parse_args()
     name = args.name or f"{cfg.base}_{cfg.targets}_r{cfg.rank}"
     train(cfg, name, limit=args.limit, max_steps=args.max_steps, eval_every=args.eval_every)
