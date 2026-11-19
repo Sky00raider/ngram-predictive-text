@@ -1,0 +1,25 @@
+device=cpu tokenizer=char vocab=97 tokens=2,909,380 params=833,121
+config: Config(block_size=128, n_embd=128, n_heads=4, n_layers=4, dropout=0.1, batch_size=32, max_iters=5000, lr=0.001, eval_interval=250, eval_iters=50, seed=1337)
+untrained loss should be about ln(vocab) = 4.575
+step     0 | train 4.6835 | val 4.6844 | 0.1 min
+step   250 | train 2.5511 | val 2.5464 | 2.1 min
+step   500 | train 2.1462 | val 2.1405 | 4.0 min
+step   750 | train 1.9716 | val 1.9759 | 6.0 min
+step  1000 | train 1.8369 | val 1.8623 | 7.9 min
+step  1250 | train 1.7532 | val 1.7708 | 9.9 min
+step  1500 | train 1.7220 | val 1.7323 | 11.9 min
+step  1750 | train 1.6684 | val 1.6753 | 13.9 min
+step  2000 | train 1.6286 | val 1.6438 | 15.9 min
+step  2250 | train 1.6072 | val 1.6273 | 17.7 min
+step  2500 | train 1.5884 | val 1.5877 | 19.9 min
+step  2750 | train 1.5647 | val 1.5911 | 22.3 min
+step  3000 | train 1.5491 | val 1.5634 | 24.8 min
+step  3250 | train 1.5421 | val 1.5522 | 27.0 min
+step  3500 | train 1.5240 | val 1.5339 | 29.0 min
+step  3750 | train 1.5087 | val 1.5290 | 31.0 min
+step  4000 | train 1.5137 | val 1.5366 | 33.0 min
+step  4250 | train 1.4856 | val 1.5175 | 34.9 min
+step  4500 | train 1.4884 | val 1.5032 | 36.9 min
+step  4750 | train 1.4801 | val 1.4976 | 38.7 min
+step  5000 | train 1.4688 | val 1.5092 | 40.7 min
+done in 40.7 min, best val loss 1.4976 -> C:\Users\Niranjan Nishore\Desktop\TInyverse\malayalam-gpt\outputs\char\model.pt
