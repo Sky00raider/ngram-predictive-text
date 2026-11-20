@@ -1,0 +1,32 @@
+{
+  "method": "fp32",
+  "size_total_bytes": 4420067,
+  "size_linear_bytes": 3230469,
+  "tokens_per_sec": 121.35809933254475,
+  "tokens_per_sec_std": 2.0099380812801377,
+  "forward_tokens_per_sec": 20255.423059050067,
+  "val_loss": 1.508725079894066,
+  "sample": "കേരളത്തിൽനിന്നും സംഭവം കഴിഞ്ഞ ആരോപണം യുവാഗ്രഹിക്കുന്നതും ഒന്നും സുമങ്കാട്ടിലും സ്ഥാനത്ത് വരുന്നു. ഈ വീട്ടിന്റെ സ്ഥാപനത്തിലേക്ക് നല്കുവെന്ന സയ്യം നല്കി തൊട്ടിക്കാനാകുന്ന വാങ്ങിയത്. നിലവില് രാഷ്ട്രീയത്ത് സി വിട്",
+  "bench": {
+    "prompt": "കേരളത്തിൽ",
+    "gen_tokens": 200,
+    "warmup_runs": 1,
+    "speed_runs": 10,
+    "num_threads": 1,
+    "val_batches": 40,
+    "batch_size": 32,
+    "temperature": 0.8,
+    "top_k": 40,
+    "seed": 0
+  },
+  "env": {
+    "torch": "2.15.0+cpu",
+    "quant_engine": "onednn",
+    "cpu": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD"
+  },
+  "params": 833121,
+  "p2_checkpoint": {
+    "step": 4750,
+    "val_loss": 1.4975815176963807
+  }
+}

@@ -1,0 +1,2 @@
+# quantized checkpoints are rebuilt by the scripts in seconds (QAT in minutes)
+*.pt
