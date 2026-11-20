@@ -150,6 +150,7 @@ def qat_finetune(prepared: nn.Module, train: torch.Tensor, block_size: int, step
     straight-through estimator: the backward pass treats it as identity, and the
     weights learn to sit well on the int8 grid. After `freeze_observers_at` steps
     the ranges stop moving so the last steps train against the final scales.
+    Given a plain FP32 model it is an ordinary fine-tune (used as the QAT control).
     """
     g = torch.Generator().manual_seed(seed)
     opt = torch.optim.AdamW(prepared.parameters(), lr=lr)

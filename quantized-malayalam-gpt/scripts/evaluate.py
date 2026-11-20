@@ -4,8 +4,9 @@
     python scripts/evaluate.py --method dynamic
     python scripts/evaluate.py --method static_real    # calibrated on real Malayalam windows
     python scripts/evaluate.py --method static_randn   # calibrated on torch.randn "embeddings"
-    python scripts/evaluate.py --method qat            # ~5 min fine-tune; --reuse skips it if
+    python scripts/evaluate.py --method qat            # ~4 min fine-tune; --reuse skips it if
                                                        # outputs/models/qat_prepared.pt exists
+    python scripts/evaluate.py --method fp32_finetuned # control: the same fine-tune without fake quant
 
 Everything runs on CPU: PyTorch's int8 kernels are CPU-only.
 """
@@ -26,7 +27,7 @@ from src.p2 import count_params, load_fp32_model, load_splits, load_tokenizer  #
 
 RESULTS = ROOT / "outputs" / "results"
 QAT_CKPT = ROOT / "outputs" / "models" / "qat_prepared.pt"
-METHODS = ["fp32", "dynamic", "static_real", "static_randn", "qat"]
+METHODS = ["fp32", "dynamic", "static_real", "static_randn", "qat", "fp32_finetuned"]
 TRAIN_THREADS = 8  # QAT fine-tuning uses every core, like P2's training; benchmarks use BenchConfig.num_threads
 
 
@@ -65,6 +66,15 @@ def build(method: str, train: torch.Tensor, reuse: bool) -> tuple:
             print(f"qat fine-tune took {extra['qat_minutes']:.1f} min")
         extra["activation_ranges"] = Q.activation_ranges(prepared)
         return Q.convert_qat(prepared), extra
+    if method == "fp32_finetuned":
+        # Control for QAT: same steps, lr, seed and batches, but no fake quantization, still FP32.
+        # Without it, QAT's val loss mixes two effects: quantization and 300 extra low-lr steps.
+        torch.set_num_threads(TRAIN_THREADS)
+        torch.manual_seed(0)
+        start = time.perf_counter()
+        history = Q.qat_finetune(model, train, cfg.block_size)
+        model.eval()
+        return model, {"finetune_minutes": (time.perf_counter() - start) / 60, "finetune_history": history}
     raise ValueError(f"unknown method {method!r}")
 
 
