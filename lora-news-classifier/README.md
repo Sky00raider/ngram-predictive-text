@@ -143,7 +143,44 @@ Validation accuracy across training (`outputs/runs/*/log.csv`):
 
 Chance is about 0.33.
 
-_Your analysis:_
+Confusion matrices on the test set (rows = true class, columns = predicted):
+
+| bloom-560m | business | entertainment | sports |
+|---|---|---|---|
+| **business** (172) | **165** | 5 | 2 |
+| **entertainment** (219) | 2 | **215** | 2 |
+| **sports** (239) | 6 | 8 | **225** |
+
+| distilgpt2 | business | entertainment | sports |
+|---|---|---|---|
+| **business** (172) | **50** | 47 | 75 |
+| **entertainment** (219) | 7 | **163** | 49 |
+| **sports** (239) | 17 | 77 | **145** |
+
+**What this shows.**
+
+* **bloom learns the task almost at once.** One epoch takes it from chance (0.357) to 0.900.
+  The second adds 4 points, the third nothing (0.943 → 0.944), so it has converged and more
+  epochs would not help. Its 25 test errors are spread thinly. The largest group is 8 sports
+  headlines called entertainment, plausibly headlines about sports stars outside the game.
+  It is also very sure of itself: the mean probability of its chosen label is 0.99.
+* **The adapter learns the categories, not the headlines.** bloom's accuracy on the 524
+  test headlines that never appear in train (0.956) is within half a point of its accuracy
+  on the full test set (0.960). If it had leaned on the ~17% duplicated headlines, the
+  unseen-only number would be clearly lower. Deduplicating train and reporting both numbers
+  is what makes this checkable.
+* **distilgpt2 is still learning when training stops.** It sits at chance for a whole epoch
+  (0.367), then climbs to 0.543 and 0.570, and is still rising at the end. It mostly cannot
+  recognise business: it predicts "business" for only 74 of the 630 test headlines (172 are
+  business) and spreads real business headlines across the other two classes. Its mean
+  top-label probability is 0.59, so it is unsure about most headlines and does better on
+  entertainment and sports, which probably carry more recognisable byte patterns (names,
+  English loanwords like "IPL" or film titles). Its unseen-only accuracy (0.578) is slightly
+  *higher* than its overall accuracy: it hasn't even memorised the headlines it saw.
+* **Both use the same tiny budget.** 0.14–0.18% of the parameters, the same rank, the same
+  layers, the same steps. Because LoRA only nudges what the pretrained model already does,
+  it can't add knowledge the base lacks. The gap in this table comes from the bases, which
+  is what the next section looks at.
 
 ### 2. Why the tokenizer matters for Malayalam
 
@@ -175,7 +212,32 @@ Practical consequences seen here:
 * **Context.** To leave 95% of headlines uncut distilgpt2 needs `max_len` 336 (bloom: 64).
   GPT-2's 1,024-token window holds only ~340 Malayalam characters.
 
-_Your analysis:_
+**What this shows.**
+
+* **distilgpt2 has to work at the byte level before it can see a word.** For bloom a word
+  like "Facebook" is 2 tokens, close to its meaning. For distilgpt2 the same word is 31
+  byte fragments it has essentially never seen in Malayalam during pretraining, because GPT-2's
+  training data is English web text. LoRA with r = 8 on one projection per layer is a small
+  correction to existing behaviour. It can steer what the model already represents, but
+  it can't teach the model to assemble Malayalam letters out of bytes, which is what
+  distilgpt2 would need first. That is why it stays at chance for a whole epoch.
+* **The same information is spread over 9× more positions.** The label is predicted from the
+  hidden state at the final `:`. With bloom that state has 20 meaningful tokens to attend to;
+  with distilgpt2 it has to gather evidence from ~190 fragments, most of which carry no
+  meaning on their own. The few tokens it *can* read are spaces, punctuation and Latin
+  letters, which fits it doing best on entertainment and sports, where English names and
+  loanwords are common.
+* **Tokens are also cost.** Every forward and backward pass scales with sequence length, so
+  distilgpt2 trained slower than a model 7× its size, and it needs a context 5× longer
+  (`max_len` 336 vs 64) just to see the whole headline. For languages a tokenizer wasn't built
+  for, a "small" model isn't actually cheap.
+* **This is the pretrained-model version of what Project 2 found from scratch.** There, the
+  GPT-2 tokenizer also gave ~0.36 characters per token on Malayalam text, against 2.6 for a
+  1,024-token BPE trained on Malayalam. Here it costs accuracy, not just efficiency, because
+  the pretrained weights only help if the tokens mean something to them.
+* **A fair caveat:** bloom is also 7× bigger and was pretrained on Malayalam text, so this is
+  "tokenizer + pretraining language coverage" together, not the tokenizer in isolation. The two
+  go hand in hand: a tokenizer gets Malayalam merges only if Malayalam was in its training data.
 
 ### 3. Save → reload onto a fresh base
 
@@ -189,7 +251,21 @@ _Your analysis:_
 Every one of the 630 predictions is identical after reloading, and the logits match exactly.
 The control shows the check can fail: without the adapter the same base is at chance.
 
-_Your analysis:_
+**What this shows.**
+
+* **The adapter holds everything that was learned.** A fresh pretrained base, a fresh LoRA
+  layer (random A, zero B) and fresh label rows, with the saved tensors copied in, give
+  bit-for-bit the same logits. The difference is exactly 0.0, not just small: same base
+  weights from the Hub, eval mode (dropout off), and the same float operations on the same
+  CPU. The control run, the same base with an untrained adapter, scores at chance, so the
+  match is not trivial.
+* **The label-token rows have to be saved with the adapter.** The 3 label tokens don't exist in
+  the pretrained vocabulary. Without their trained rows, a reloaded model would have LoRA
+  weights tuned to point at label vectors that aren't there. Keeping them in the same file as
+  A and B, with the config, makes the adapter self-contained.
+* **The adapter is tiny compared with the model.** 3.1 MB for bloom against a ~1.1 GB base
+  (about 0.3%). One downloaded base could serve many tasks, each a few-MB adapter swapped
+  in, which is the practical reason LoRA is used.
 
 ## Limitations / next steps
 
