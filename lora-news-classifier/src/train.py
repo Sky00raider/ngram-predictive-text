@@ -117,6 +117,9 @@ def train(cfg: Config, run_name: str, limit: int | None = None, max_steps: int |
             running.append(loss.item())
             train_secs += time.time() - t0
             step += 1
+            if step % 50 == 0 and step % eval_every != 0:  # cheap progress line, no eval
+                print(f"step {step:5d}/{total_steps} | loss (last 50) {sum(running[-50:]) / len(running[-50:]):.4f} "
+                      f"| {train_secs / step:.2f} s/train step")
 
             if step % eval_every == 0 or step == total_steps:
                 val = evaluate(clf, data["validation"], train_rows)

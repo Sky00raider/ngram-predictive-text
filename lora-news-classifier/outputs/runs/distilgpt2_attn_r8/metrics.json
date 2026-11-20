@@ -1,0 +1,32 @@
+{
+  "base": "distilgpt2",
+  "targets": "attn",
+  "rank": 8,
+  "trainable_params": 149760,
+  "steps": 858,
+  "seconds": 8815,
+  "seconds_per_step": 10.04,
+  "validation": {
+    "acc": 0.5698412698412698,
+    "acc_unseen": 0.5802707930367504,
+    "n": 630,
+    "n_unseen": 517,
+    "per_class": {
+      "business": 0.29,
+      "entertainment": 0.7135922330097088,
+      "sports": 0.6875
+    }
+  },
+  "test": {
+    "acc": 0.5682539682539682,
+    "acc_unseen": 0.5782442748091603,
+    "n": 630,
+    "n_unseen": 524,
+    "per_class": {
+      "business": 0.29069767441860467,
+      "entertainment": 0.7442922374429224,
+      "sports": 0.606694560669456
+    }
+  },
+  "adapter_bytes": 603900
+}

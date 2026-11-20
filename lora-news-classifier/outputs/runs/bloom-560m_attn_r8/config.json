@@ -1,0 +1,21 @@
+{
+  "base": "bloom-560m",
+  "targets": "attn",
+  "rank": 8,
+  "alpha": 16.0,
+  "lora_dropout": 0.05,
+  "epochs": 3,
+  "batch_size": 16,
+  "lr": 0.001,
+  "warmup_frac": 0.05,
+  "weight_decay": 0.0,
+  "max_len": 64,
+  "seed": 1337,
+  "quant": null,
+  "quant_block": 64,
+  "labels": [
+    "business",
+    "entertainment",
+    "sports"
+  ]
+}

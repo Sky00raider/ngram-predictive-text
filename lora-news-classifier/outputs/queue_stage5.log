@@ -1,0 +1,56 @@
+
+=== 2026-11-20 02:17:48 start bloom-560m_attn_r8: --base bloom-560m --targets attn --rank 8 --lr 1e-3
+Loading weights:   0%|          | 0/293 [00:00<?, ?it/s]Loading weights:  11%|#1        | 33/293 [00:00<00:00, 328.82it/s]Loading weights:  23%|##2       | 66/293 [00:00<00:00, 291.65it/s]Loading weights:  33%|###2      | 96/293 [00:00<00:00, 221.41it/s]Loading weights:  41%|####      | 120/293 [00:00<00:00, 216.45it/s]Loading weights:  49%|####8     | 143/293 [00:00<00:00, 219.86it/s]Loading weights:  57%|#####6    | 166/293 [00:00<00:00, 196.79it/s]Loading weights:  64%|######3   | 187/293 [00:00<00:00, 196.18it/s]Loading weights:  72%|#######2  | 211/293 [00:00<00:00, 206.83it/s]Loading weights:  80%|#######9  | 233/293 [00:01<00:00, 209.43it/s]Loading weights:  87%|########7 | 255/293 [00:01<00:00, 208.99it/s]Loading weights:  95%|#########4| 277/293 [00:01<00:00, 197.69it/s]Loading weights: 100%|##########| 293/293 [00:03<00:00, 96.43it/s] 
+bloom-560m | targets=attn r=8 alpha=16.0 | device=cpu
+trainable 789,504 of 560,004,096 params (0.141%) | train 4572 headlines (deduplicated), labels ['business', 'entertainment', 'sports']
+max_len 64: 0.6% of train headlines are truncated
+before training: val acc 0.357
+step   286/858 | loss 0.9974 | val acc 0.900 (unseen 0.894) | 6.86 s/train step
+step   572/858 | loss 0.2493 | val acc 0.943 (unseen 0.936) | 6.61 s/train step
+step   858/858 | loss 0.0779 | val acc 0.944 (unseen 0.940) | 6.48 s/train step
+test acc 0.960 (n=630) | unseen-only 0.956 (n=524)
+Loading weights:   0%|          | 0/293 [00:00<?, ?it/s]Loading weights:  12%|#2        | 36/293 [00:00<00:00, 287.37it/s]Loading weights:  23%|##2       | 67/293 [00:00<00:00, 289.80it/s]Loading weights:  33%|###2      | 96/293 [00:00<00:00, 256.97it/s]Loading weights:  42%|####1     | 122/293 [00:00<00:00, 249.51it/s]Loading weights:  51%|#####     | 148/293 [00:00<00:00, 251.03it/s]Loading weights:  59%|#####9    | 174/293 [00:00<00:00, 246.95it/s]Loading weights:  69%|######8   | 202/293 [00:00<00:00, 248.54it/s]Loading weights:  78%|#######8  | 230/293 [00:00<00:00, 249.28it/s]Loading weights:  87%|########7 | 255/293 [00:01<00:00, 244.78it/s]Loading weights:  96%|#########6| 282/293 [00:01<00:00, 78.64it/s] Loading weights: 100%|##########| 293/293 [00:02<00:00, 131.21it/s]
+Loading weights:   0%|          | 0/293 [00:00<?, ?it/s]Loading weights:  10%|#         | 30/293 [00:00<00:00, 296.88it/s]Loading weights:  20%|##        | 60/293 [00:00<00:00, 252.79it/s]Loading weights:  29%|##9       | 86/293 [00:00<00:00, 252.72it/s]Loading weights:  38%|###8      | 112/293 [00:00<00:00, 211.28it/s]Loading weights:  46%|####5     | 134/293 [00:00<00:00, 211.51it/s]Loading weights:  53%|#####3    | 156/293 [00:00<00:00, 208.81it/s]Loading weights:  61%|######    | 178/293 [00:00<00:00, 187.65it/s]Loading weights:  69%|######8   | 201/293 [00:00<00:00, 192.59it/s]Loading weights:  75%|#######5  | 221/293 [00:01<00:00, 192.74it/s]Loading weights:  82%|########2 | 241/293 [00:01<00:00, 182.35it/s]Loading weights:  90%|######### | 264/293 [00:01<00:00, 184.19it/s]Loading weights:  98%|#########7| 286/293 [00:04<00:00, 23.03it/s] Loading weights: 100%|##########| 293/293 [00:04<00:00, 62.74it/s]
+## bloom-560m_attn_r8
+
+adapter file: 3,100 KB (base model bigscience/bloom-560m not included) | 630 test headlines
+
+| | test accuracy |
+|---|---|
+| at the end of training | 0.9603 |
+| fresh base + reloaded adapter | 0.9603 |
+| fresh base, untrained adapter (control) | 0.3905 |
+
+max |logit difference| after reload: 0.00e+00 | identical predictions: True | **MATCH**
+
+
+=== 2026-11-20 04:06:24 done bloom-560m_attn_r8 (reload check exit 0)
+
+=== 2026-11-20 04:06:24 start distilgpt2_attn_r8: --base distilgpt2 --targets attn --rank 8 --lr 1e-3
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights:  30%|###       | 23/76 [00:00<00:00, 205.08it/s]Loading weights:  58%|#####7    | 44/76 [00:00<00:00, 122.04it/s]Loading weights: 100%|##########| 76/76 [00:00<00:00, 223.88it/s]
+distilgpt2 | targets=attn r=8 alpha=16.0 | device=cpu
+trainable 149,760 of 82,062,336 params (0.182%) | train 4572 headlines (deduplicated), labels ['business', 'entertainment', 'sports']
+max_len 336: 5.1% of train headlines are truncated
+before training: val acc 0.356
+step   286/858 | loss 1.7211 | val acc 0.367 (unseen 0.362) | 10.06 s/train step
+step   572/858 | loss 1.0509 | val acc 0.543 (unseen 0.549) | 10.02 s/train step
+step   858/858 | loss 0.9564 | val acc 0.570 (unseen 0.580) | 10.04 s/train step
+test acc 0.568 (n=630) | unseen-only 0.578 (n=524)
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights:  25%|##5       | 19/76 [00:00<00:00, 158.01it/s]Loading weights:  46%|####6     | 35/76 [00:00<00:00, 100.53it/s]Loading weights: 100%|##########| 76/76 [00:00<00:00, 229.91it/s]
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]Loading weights:  25%|##5       | 19/76 [00:00<00:00, 172.25it/s]Loading weights:  58%|#####7    | 44/76 [00:00<00:00, 216.10it/s]Loading weights: 100%|##########| 76/76 [00:00<00:00, 359.34it/s]
+## distilgpt2_attn_r8
+
+adapter file: 590 KB (base model distilbert/distilgpt2 not included) | 630 test headlines
+
+| | test accuracy |
+|---|---|
+| at the end of training | 0.5683 |
+| fresh base + reloaded adapter | 0.5683 |
+| fresh base, untrained adapter (control) | 0.3794 |
+
+max |logit difference| after reload: 0.00e+00 | identical predictions: True | **MATCH**
+
+
+=== 2026-11-20 06:42:54 done distilgpt2_attn_r8 (reload check exit 0)
+
+=== 2026-11-20 06:42:54 queue finished

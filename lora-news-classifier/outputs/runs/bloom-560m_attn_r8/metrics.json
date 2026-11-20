@@ -1,0 +1,32 @@
+{
+  "base": "bloom-560m",
+  "targets": "attn",
+  "rank": 8,
+  "trainable_params": 789504,
+  "steps": 858,
+  "seconds": 5793,
+  "seconds_per_step": 6.484,
+  "validation": {
+    "acc": 0.9444444444444444,
+    "acc_unseen": 0.9400386847195358,
+    "n": 630,
+    "n_unseen": 517,
+    "per_class": {
+      "business": 0.955,
+      "entertainment": 0.941747572815534,
+      "sports": 0.9375
+    }
+  },
+  "test": {
+    "acc": 0.9603174603174603,
+    "acc_unseen": 0.9561068702290076,
+    "n": 630,
+    "n_unseen": 524,
+    "per_class": {
+      "business": 0.9593023255813954,
+      "entertainment": 0.9817351598173516,
+      "sports": 0.9414225941422594
+    }
+  },
+  "adapter_bytes": 3174672
+}
