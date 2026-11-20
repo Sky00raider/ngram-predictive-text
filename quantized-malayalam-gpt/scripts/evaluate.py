@@ -27,6 +27,7 @@ from src.p2 import count_params, load_fp32_model, load_splits, load_tokenizer  #
 
 RESULTS = ROOT / "outputs" / "results"
 QAT_CKPT = ROOT / "outputs" / "models" / "qat_prepared.pt"
+FT_CKPT = ROOT / "outputs" / "models" / "fp32_finetuned.pt"
 METHODS = ["fp32", "dynamic", "static_real", "static_randn", "qat", "fp32_finetuned"]
 TRAIN_THREADS = 8  # QAT fine-tuning uses every core, like P2's training; benchmarks use BenchConfig.num_threads
 
@@ -69,12 +70,19 @@ def build(method: str, train: torch.Tensor, reuse: bool) -> tuple:
     if method == "fp32_finetuned":
         # Control for QAT: same steps, lr, seed and batches, but no fake quantization, still FP32.
         # Without it, QAT's val loss mixes two effects: quantization and 300 extra low-lr steps.
+        if reuse and FT_CKPT.exists():
+            model.load_state_dict(torch.load(FT_CKPT))
+            print(f"reused {FT_CKPT.relative_to(ROOT)}")
+            return model.eval(), json.loads(FT_CKPT.with_suffix(".json").read_text(encoding="utf-8"))
         torch.set_num_threads(TRAIN_THREADS)
         torch.manual_seed(0)
         start = time.perf_counter()
         history = Q.qat_finetune(model, train, cfg.block_size)
         model.eval()
-        return model, {"finetune_minutes": (time.perf_counter() - start) / 60, "finetune_history": history}
+        extra = {"finetune_minutes": (time.perf_counter() - start) / 60, "finetune_history": history}
+        torch.save(model.state_dict(), FT_CKPT)
+        FT_CKPT.with_suffix(".json").write_text(json.dumps(extra, indent=2), encoding="utf-8")
+        return model, extra
     raise ValueError(f"unknown method {method!r}")
 
 
