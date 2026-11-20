@@ -126,7 +126,13 @@ TF-IDF + SVM already reaches 87.0, which suggests much of LEDGAR can be solved f
 Accuracy on never-seen clauses (87.0%) matches the overall number, so the score
 does not come from memorised boilerplate. Truncated clauses are not worse.
 
-> **My analysis:** _…_
+> **My analysis:** What surprised me is how little the architecture matters here. A left-to-right
+> language model that has to *say* the class as its next token ends up within a point of
+> bidirectional encoders with a classification head. TF-IDF is only 0.3 points behind it.
+> When a bag of words, BERT, Legal-BERT and GPT-2 all land between 87 and 88%, the limit is
+> probably the labels rather than the models (see Finding 3). The model-dependent part shows up in
+> macro-F1. There the encoders lead by 1-2 points, so the rare clause types are where a
+> stronger or legal-domain model would still pay off.
 
 ### 2. Abstention: trading coverage for accuracy
 
@@ -147,7 +153,13 @@ validation coverage, and accuracy lands 0-0.6 points below its target. The short
 at the top end, where the curve is steep and a small shift between splits costs a little accuracy.
 Answering everything gives 87.3%, while sending the least confident 20% to a human gives 94.6%.
 
-> **My analysis:** _…_
+> **My analysis:** The number I'd show a legal team isn't the accuracy, it's the errors.
+> Answering everything leaves 1,269 wrong tags in 10,000 clauses. At the default threshold, only 431
+> wrong tags reach the user unreviewed, so **two thirds of all errors are caught** in exchange for a
+> person reading 20% of the clauses. The review queue is also worth a reviewer's time: 838 of its 2,024
+> clauses (41%) really are mistagged, against 13% across all clauses. And 57% of all errors have the
+> right answer as the model's *second* choice. Showing the reviewer the top two tags would make most
+> fixes a single click.
 
 ### 3. Rare classes: worse, and the model knows it
 
@@ -197,7 +209,14 @@ whatever heading the drafter used, so "Applicable Laws" and "Governing Laws" sec
 contain essentially the same text, and the model sends 41 of the 53 "Applicable Laws" test clauses to the bigger class.
 These are disagreements about naming more than misunderstandings of the clause.
 
-> **My analysis:** _…_
+> **My analysis:** The rare-class story is real but secondary. More training data clearly helps:
+> accuracy climbs from about 55% to 94% across the frequency buckets. But the worst class,
+> Applicable Laws, has 348 training examples, more than a third of all classes, and still scores 5.7%,
+> because its clauses read exactly like Governing Laws. No amount of extra data fixes that; a cleaner
+> label set would. If I were deploying this, I would merge the obvious synonym pairs
+> (Withholdings / Tax Withholdings, Definitions / Defined Terms, Waivers / No Waivers, ...) before
+> collecting a single extra example. The encouraging part is that the review rate rises as frequency falls,
+> so the model behaves more cautiously on exactly the classes it has seen least.
 
 ### 4. Calibration: are 90%-confident predictions right 90% of the time?
 
@@ -216,7 +235,13 @@ not 85%. Temperature scaling, a single number T = 1.38 fitted on validation that
 brings test ECE down to **1.2%** and NLL from 0.513 to 0.465. It changes no prediction and no
 ranking, so the coverage curve above is identical; it only makes the confidence numbers mean what they say.
 
-> **My analysis:** _…_
+> **My analysis:** Calibration matters less for the abstention rule than I expected. The threshold is
+> picked by *measured* accuracy on validation, so it works whether 0.88 "means" 88% or not; all it needs
+> is that higher confidence ranks clauses better, and it does. Calibration matters when a person reads
+> the number. A reviewer told "85% confident" should be able to trust that roughly 85 in 100 such tags
+> are right, and raw GPT-2 gets only 77. Since one fitted number fixes this almost completely,
+> the tagger should report temperature-scaled confidence. That is a one-line change I'd make
+> before anyone relies on the displayed number.
 
 ### 5. distilgpt2 vs gpt2
 
@@ -237,7 +262,13 @@ the same accuracy target. The gap is widest on rare classes: in the 100-249-exam
 mean per-class accuracy vs gpt2's 59.7%. Training takes two thirds of the time. Both models are similarly
 calibrated, and their errors are on the same synonym pairs.
 
-> **My analysis:** _…_
+> **My analysis:** The accuracy gap (1.8 points) understates the difference in practice. Both models
+> reach 95% the same way, by sending clauses to review, but distilgpt2 needs to send 2,579 per
+> 10,000 against gpt2's 2,024: about 550 more clauses for a person to read, for every 10,000 tagged.
+> The gap grows the stricter the target (6 points of coverage at 95%, 9 at 98%), so the bigger model
+> buys better *ranking* of its own confidence, not just more right answers. Training is a one-off
+> 17 extra minutes and inference is cheap either way, so for a review workflow I'd pick gpt2.
+> distilgpt2 only makes sense if inference speed or memory is the binding constraint.
 
 ### 6. The tagger on real clauses
 
@@ -254,7 +285,12 @@ The last row shows what a confidence threshold can't catch. The clause is about 
 *triggered by death*, and both labels are defensible. The model is sure, and the dataset disagrees.
 Label ambiguity, not uncertainty, is the main source of confident errors.
 
-> **My analysis:** _…_
+> **My analysis:** "Knows when it's unsure" holds up, with one honest caveat. The review flag catches the
+> model's *doubt*, but not *disagreements about naming* where the model is certain. Above 99% confidence the tagger is
+> right 97.9% of the time, but that still leaves 115 confident errors per 10,000 clauses, and a
+> quarter of all unreviewed errors (109 of 431) fall in the top confused synonym pairs. So the
+> confidence score is a good triage signal, not a guarantee. The fix lives in the label set and in
+> how results are shown (top two tags when they are known near-synonyms), not in a stricter threshold.
 
 ## Limitations / next steps
 
